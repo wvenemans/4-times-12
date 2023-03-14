@@ -1,2 +1,2 @@
 # 4-times-12
- Python-based mobile app
+ A attempt to develop a qwixx dupe into a mobile app
