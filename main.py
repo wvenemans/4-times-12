@@ -49,14 +49,20 @@ class App(tk.Tk):
         self.endButtonGreen = self.endButton("green")
         self.endButtonGreen.grid(row=3, column=11, sticky="nsew")
 
-        
-
 
         self.scoreLabelYellow.grid(row=0, column=12, sticky="nsew")
         self.scoreLabelRed.grid(row=1, column=12, sticky="nsew")
         self.scoreLabelBlue.grid(row=2, column=12, sticky="nsew")
         self.scoreLabelGreen.grid(row=3, column=12, sticky="nsew")
+
+        self.failButton().grid(row=4, column=11, sticky="nsew")
+        self.failNumber.grid(row=4, column=12, sticky="nsew")
+
+        self.diceButton().grid(row=4, column=0, sticky="nsew")
+
+
         
+      
 
 
     def numberbutton(self, number, color):
@@ -75,7 +81,7 @@ class App(tk.Tk):
 
     def failButton(self):
 
-        self.button = tk.Button(self, text="Fail", bg="black", command=lambda: self.failsUpdate()) 
+        self.button = tk.Button(self, text="Fail", bg="white", command=lambda: self.failsUpdate()) 
         self.button.config(state="normal")
 
         return self.button
@@ -83,8 +89,14 @@ class App(tk.Tk):
     def failsUpdate(self):
             
             self.fails += 1
-            self.failButton().grid(row=4, column=11, sticky="nsew")
-            self.button.config(state="disabled")
+
+            self.failNumber.config(text="Fails: " + str(self.fails))
+
+            
+
+            if self.fails >= 3:
+                self.endGame()
+                
     
     def updateEndButton(self, color):
 
@@ -129,6 +141,8 @@ class App(tk.Tk):
 
         self.scoreLabelGreen = tk.Label(self, text="Green: " + str(self.scoreGreen))
         #self.scoreLabelGreen.pack()
+
+        self.failNumber = tk.Label(self, text="Fails: " + str(self.fails))
 
 
     def scoreUpdate(self, number, color):
@@ -191,25 +205,25 @@ class App(tk.Tk):
     def disableRow(self, color):
 
         if color == "yellow":
-            for i in range(10):
+            for i in range(11):
                 self.newButton = self.numberbutton(i+2, "yellow")
                 self.newButton.config(state="disabled")
                 self.newButton.grid(row=0, column=i, sticky="nsew")
 
         elif color == "red":
-            for i in range(10):
+            for i in range(11):
                 self.newButton = self.numberbutton(i+2, "red")
                 self.newButton.config(state="disabled")
                 self.newButton.grid(row=1, column=i, sticky="nsew")
 
         elif color == "blue":
-            for i in range(10):
+            for i in range(11):
                 self.newButton = self.numberbutton(i+2, "blue")
                 self.newButton.config(state="disabled")
                 self.newButton.grid(row=2, column=i, sticky="nsew")
 
         elif color == "green":
-            for i in range(10):
+            for i in range(11):
                 self.newButton = self.numberbutton(i+2, "green")
                 self.newButton.config(state="disabled")
                 self.newButton.grid(row=3, column=i, sticky="nsew")
@@ -253,9 +267,21 @@ class App(tk.Tk):
             if self.rowsCompleted == 2:
                 self.endGame()
 
+
+
+    def diceButton(self):
+            
+            self.diceButton = tk.Button(self, text="Roll Dice", command= lambda: self.dice())
+
+            return self.diceButton
+
+    def dice(self):
+
+        message = showinfo("Dice", "You threw: " + str(np.random.randint(1,6, size=6))) 
+
     def endGame(self):
 
-        self.totalScore = self.scoreYellow + self.scoreRed + self.scoreBlue + self.scoreGreen
+        self.totalScore = self.scoreYellow + self.scoreRed + self.scoreBlue + self.scoreGreen - self.fails*5
         message = showinfo("Game Over", "Final Score: " + str(self.totalScore))
 
 if __name__ == "__main__":
